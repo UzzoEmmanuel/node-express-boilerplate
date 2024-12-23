@@ -41,6 +41,7 @@ export interface JwtPayload {
 }
 
 export type PassportDone = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   error: any,
   user?: User | false,
   info?: { message: string }

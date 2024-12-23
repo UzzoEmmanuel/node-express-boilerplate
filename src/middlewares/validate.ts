@@ -16,6 +16,7 @@ export const validateRequest = (validations: ValidationChain[]) => {
     }
 
     const validationError = new AppError('Validation Error', 400);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (validationError as any).errors = errors.array();
     next(validationError);
   };

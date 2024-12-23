@@ -1,5 +1,6 @@
 import winston from 'winston';
 import path from 'path';
+import { NODE_ENV } from '../config/env';
 
 const levels = {
   error: 0,
@@ -40,12 +41,12 @@ const transports: winston.transport[] = [
   }),
 ];
 
-if (process.env.NODE_ENV !== 'production') {
+if (NODE_ENV !== 'production') {
   transports.push(new winston.transports.Console());
 }
 
 const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+  level: NODE_ENV === 'development' ? 'debug' : 'info',
   levels,
   format,
   transports,

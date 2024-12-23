@@ -1,3 +1,10 @@
+let mockNodeEnv = 'test';
+jest.mock('../../config/env', () => ({
+  get NODE_ENV() {
+    return mockNodeEnv;
+  },
+}));
+
 import winston from 'winston';
 import fs from 'fs';
 import path from 'path';
@@ -122,24 +129,24 @@ describe('Logger Configuration', () => {
   }, 15000);
 
   describe('Environment specific behavior', () => {
-    const originalEnv = process.env.NODE_ENV;
-
-    afterAll(() => {
-      process.env.NODE_ENV = originalEnv;
+    beforeEach(() => {
+      jest.clearAllMocks();
     });
 
     it('should use debug level in development', () => {
-      process.env.NODE_ENV = 'development';
+      mockNodeEnv = 'development';
+
       const devLogger = winston.createLogger({
-        level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+        level: mockNodeEnv === 'development' ? 'debug' : 'info',
       });
       expect(devLogger.level).toBe('debug');
     });
 
     it('should use info level in production', () => {
-      process.env.NODE_ENV = 'production';
+      mockNodeEnv = 'production';
+
       const prodLogger = winston.createLogger({
-        level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
+        level: mockNodeEnv === 'development' ? 'debug' : 'info',
       });
       expect(prodLogger.level).toBe('info');
     });

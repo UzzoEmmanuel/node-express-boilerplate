@@ -9,6 +9,13 @@ jest.mock('../../config/logger', () => ({
   warn: jest.fn(),
 }));
 
+let mockNodeEnv = 'test';
+jest.mock('../../config/env', () => ({
+  get NODE_ENV() {
+    return mockNodeEnv;
+  },
+}));
+
 describe('Error Middleware', () => {
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
@@ -100,10 +107,9 @@ describe('Error Middleware', () => {
     });
 
     it('should include stack trace in development environment', () => {
-      const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'development';
+      mockNodeEnv = 'development';
 
-      const error = new Error('Test error');
+      const error = new AppError('Test error', 500);
       error.stack = 'Test stack trace';
 
       errorHandler(
@@ -113,20 +119,20 @@ describe('Error Middleware', () => {
         nextFunction
       );
 
-      expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          stack: 'Test stack trace',
-        })
-      );
-
-      process.env.NODE_ENV = originalEnv;
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        status: 'error',
+        message: 'Test error',
+        errors: [],
+        stack: 'Test stack trace',
+      });
     });
 
     it('should not include stack trace in production', () => {
-      const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'production';
+      mockNodeEnv = 'prodution';
 
-      const error = new Error('Test error');
+      console.log('process.env.NODE_ENV', process.env.NODE_ENV);
+
+      const error = new AppError('Test error', 500);
       error.stack = 'Test stack trace';
 
       errorHandler(
@@ -141,8 +147,6 @@ describe('Error Middleware', () => {
           stack: expect.any(String),
         })
       );
-
-      process.env.NODE_ENV = originalEnv;
     });
   });
 

@@ -4,6 +4,7 @@ import { AuthenticatedRequest } from '../types/auth/auth';
 import prisma from '../db';
 import logger from '../config/logger';
 import { AppError } from '../utils/AppError';
+import { JWT_SECRET } from '../config/env';
 
 export const auth = async (
   req: AuthenticatedRequest,
@@ -21,7 +22,7 @@ export const auth = async (
     }
 
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
+      const decoded = jwt.verify(token, JWT_SECRET as string) as {
         id: number;
         email: string;
       };

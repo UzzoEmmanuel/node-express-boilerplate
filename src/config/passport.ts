@@ -5,6 +5,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import bcrypt from 'bcrypt';
 import prisma from '../db';
 import { addHours } from 'date-fns';
+import { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET } from './env';
 import { JwtPayload, PassportDone, GoogleProfile } from '../types/auth/auth';
 
 // Configuration Local Strategy
@@ -40,7 +41,7 @@ passport.use(
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_SECRET || 'your-secret-key',
+      secretOrKey: JWT_SECRET || 'your-secret-key',
     },
     async (jwtPayload: JwtPayload, done: PassportDone) => {
       try {
@@ -62,10 +63,11 @@ passport.use(
 
 // Configuration Google Strategy
 passport.use(
+  'google',
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      clientID: GOOGLE_CLIENT_ID || '',
+      clientSecret: GOOGLE_CLIENT_SECRET || '',
       callbackURL: 'http://localhost:3000/auth/google/callback',
     },
     async (
@@ -148,6 +150,7 @@ passport.use(
  * 2. We know our user object will always have an 'id' property
  * 3. The serialization logic is simple and contained
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 passport.serializeUser(function (user: any, done) {
   done(null, user.id);
 });

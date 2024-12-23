@@ -28,9 +28,11 @@ import {
   createNotFoundError,
   AppError,
 } from '../utils/AppError';
+import { JWT_SECRET } from '../config/env';
 
 const router: Router = express.Router();
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AuthRequestHandler<T = any> = RequestHandler<
   Record<string, never>,
   AuthResponse | ErrorResponse,
@@ -206,7 +208,7 @@ const registerHandler: AuthRequestHandler<RegisterRequest> = async (
 
     const token = jwt.sign(
       { id: user.id, email: user.email },
-      process.env.JWT_SECRET as string,
+      JWT_SECRET as string,
       { expiresIn: '1h' }
     );
 
@@ -290,7 +292,7 @@ const loginHandler: AuthRequestHandler<LoginRequest> = async (
 
     const token = jwt.sign(
       { id: user.id, email: user.email },
-      process.env.JWT_SECRET as string,
+      JWT_SECRET as string,
       { expiresIn: '1h' }
     );
 
@@ -388,7 +390,7 @@ router.get(
 
       const token = jwt.sign(
         { id: req.user.id, email: req.user.email },
-        process.env.JWT_SECRET as string,
+        JWT_SECRET as string,
         { expiresIn: '1h' }
       );
 

@@ -2,6 +2,7 @@ export class AppError extends Error {
   statusCode: number;
   status: string;
   isOperational: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors?: any[];
 
   constructor(message: string, statusCode: number) {

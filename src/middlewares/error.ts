@@ -3,6 +3,7 @@ import { AppError } from '../utils/AppError';
 import { Prisma } from '@prisma/client';
 import { ErrorResponse } from '../types/error/error';
 import logger from '../config/logger';
+import { NODE_ENV } from '../config/env';
 
 export const errorHandler = (
   err: Error | AppError,
@@ -21,7 +22,9 @@ export const errorHandler = (
     statusCode = err.statusCode;
     response.status = err.status;
     response.message = err.message;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((err as any).errors) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       response.errors = (err as any).errors;
     }
   }
@@ -47,7 +50,7 @@ export const errorHandler = (
   });
 
   // Add stack trace in development
-  if (process.env.NODE_ENV === 'development') {
+  if (NODE_ENV === 'development') {
     response.stack = err.stack;
   }
 

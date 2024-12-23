@@ -1,10 +1,8 @@
 import { CorsOptions } from 'cors';
+import { NODE_ENV, ALLOWED_ORIGINS } from '../config/env';
 
 const corsOptions: CorsOptions = {
-  origin:
-    process.env.NODE_ENV === 'production'
-      ? process.env.ALLOWED_ORIGINS?.split(',')
-      : true,
+  origin: NODE_ENV === 'production' ? ALLOWED_ORIGINS : true,
 
   // Allowed HTTP methods
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
